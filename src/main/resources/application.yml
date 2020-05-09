@@ -1,0 +1,54 @@
+spring.cloud.stream:
+  bindings:
+    pvout:
+      destination: pvs
+      producer:
+         header-mode: none
+    pvin:
+      destination: pvs
+      consumer:
+         header-mode: none
+    pcout:
+      destination: pcs
+      producer:
+         user-native-encoding: true
+    pcin:
+      destination: pcs
+      consumer:
+         user-native-encoding: true
+         header-mode: none
+      group: pcs
+      content-type: application/json                 
+  kafka:
+    streams:
+      binder:
+        applicationId: hello-word-count-sample
+        configuration:
+          commit.interval.ms: 100
+          default:
+            key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      bindings:
+         pcout:
+            producer:
+               key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+               value.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+         pcin:
+            consumer:
+               key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+               value.serde: org.apache.kafka.common.serialization.Serdes$LongSerde
+               
+            
+#Enable metrics
+management:
+  endpoint:
+    health:
+      show-details: ALWAYS
+  endpoints:
+    web:
+      exposure:
+        include: metrics,health
+#Enable logging to debug for spring kafka config
+logging:
+  level:
+    org.springframework.kafka.config: debug
